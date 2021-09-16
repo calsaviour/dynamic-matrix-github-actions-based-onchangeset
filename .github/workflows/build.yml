@@ -1,12 +1,46 @@
 name: "Example"
-on: [ push ]
+on:
+  push:
+  workflow_dispatch:
 jobs:
   changeFiles:
     runs-on: ubuntu-latest
     # Map a step output to a job output
     outputs:
-      output1: ${{ steps.get_changeset.outputs.test }}
+      matrix: ${{ steps.get_changeset.outputs.matrix }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - id: get_changeset
+        shell: bash
         run: |
-          echo "::set-output name=test::hello"
+          changeset=$(git diff --name-only HEAD HEAD~1 | grep service | cut -d '/' -f1-2 | uniq | xargs)
+          declare -a changeset_array=() && for c in ${changeset}; do changeset_array+=( ${c} ); done
+          echo "::set-output name=matrix::$(printf '%s\n' "${changeset_array[@]}" | jq -R . | jq -cs .)"
+
+      - name: print
+        run: |
+          echo "{{ steps.get_changeset.outputs.matrix }}"
+  Build:
+    runs-on: ubuntu-latest
+    needs: [changeFiles]
+    strategy:
+      matrix:
+        services: ${{fromJson(needs.changeFiles.outputs.matrix)}}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "print matrix"
+        run: |
+          ls -ltr ${{ matrix.services }}
+
+      - name: Cat file
+        working-directory: ${{ matrix.services }}
+        run: |
+          cat api*.txt
