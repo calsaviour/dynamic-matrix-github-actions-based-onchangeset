@@ -1,0 +1,12 @@
+name: "Example"
+on: [ push ]
+jobs:
+  changeFiles:
+    runs-on: ubuntu-latest
+    # Map a step output to a job output
+    outputs:
+      output1: ${{ steps.get_changeset.outputs.test }}
+    steps:
+      - id: get_changeset
+        run: |
+          echo "::set-output name=test::hello"
