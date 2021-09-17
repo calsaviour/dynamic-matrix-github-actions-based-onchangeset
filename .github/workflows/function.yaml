@@ -16,4 +16,5 @@ jobs:
           
       - name: Function
         run: |
-          function getProps { echo "Hello" }  
+          function getProps { echo "Hello" }
+          
