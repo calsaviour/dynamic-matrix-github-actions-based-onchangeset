@@ -17,7 +17,5 @@ jobs:
       - name: Function
         shell: bash
         run: |
-          getProps () {
-            echo $1 $2
-          }
+          getProps () { echo $1 $2 }
           getProps cat.json app
