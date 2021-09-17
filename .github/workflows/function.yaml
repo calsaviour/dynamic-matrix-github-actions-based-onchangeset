@@ -15,6 +15,9 @@ jobs:
           fetch-depth: 0
           
       - name: Function
+        shell: bash
         run: |
-          function getProps { echo "Hello" }
-          
+          hello_world () {
+            echo 'hello, world'
+          }
+          hello_world
