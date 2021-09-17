@@ -20,4 +20,4 @@ jobs:
           getProps () {
             echo $1 $2
           }
-          hello_world cat.json app
+          getProps cat.json app
