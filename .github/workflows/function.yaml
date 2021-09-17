@@ -1,0 +1,21 @@
+name: "Example"
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  changeFiles:
+    runs-on: ubuntu-latest
+    # Map a step output to a job output
+    outputs:
+      matrix: ${{ steps.get_changeset.outputs.matrix }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          
+      - name: Function
+        run: |
+          function getProps { echo "Hello" }
+          getProps
+  
